@@ -23,6 +23,15 @@ const Navbar = () => {
     { name: 'Contact', href: '#contact' },
   ];
 
+  const handleSmoothScroll = (e, href) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    setIsOpen(false);
+  };
+
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-lg py-2' : 'bg-white/90 backdrop-blur-md py-3'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,6 +63,7 @@ const Navbar = () => {
               <a
                 key={link.name}
                 href={link.href}
+                onClick={(e) => handleSmoothScroll(e, link.href)}
                 className="font-medium text-gray-700 hover:text-blue-900 hover:font-bold transition-all"
               >
                 {link.name}
@@ -87,7 +97,7 @@ const Navbar = () => {
               <a
                 key={link.name}
                 href={link.href}
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => handleSmoothScroll(e, link.href)}
                 className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-900 hover:bg-blue-50 border-b border-gray-100"
               >
                 {link.name}

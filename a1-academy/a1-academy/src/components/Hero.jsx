@@ -2,6 +2,14 @@ import { Star, ChevronRight, Trophy } from 'lucide-react';
 import ThreeDScene from './ThreeDScene';
 
 const Hero = () => {
+  const handleSmoothScroll = (e, href) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-blue-900">
       {/* 3D Background Container */}
@@ -33,6 +41,7 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up delay-300">
           <a
             href="#admissions"
+            onClick={(e) => handleSmoothScroll(e, '#admissions')}
             className="group px-6 py-3 bg-amber-500 hover:bg-amber-400 text-blue-900 text-base font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] transform hover:-translate-y-1 flex items-center justify-center gap-2"
           >
             Enroll for 2025
@@ -40,6 +49,7 @@ const Hero = () => {
           </a>
           <a
             href="#results"
+            onClick={(e) => handleSmoothScroll(e, '#results')}
             className="px-6 py-3 bg-white/5 border border-white/20 text-white text-base font-bold rounded-xl hover:bg-white hover:text-blue-900 transition-all backdrop-blur-sm flex items-center justify-center gap-2"
           >
             View Toppers

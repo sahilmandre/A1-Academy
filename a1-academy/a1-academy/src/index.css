@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Custom Animations */
 @keyframes fade-in-up {
   from {
