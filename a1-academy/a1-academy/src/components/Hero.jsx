@@ -60,7 +60,7 @@ const Hero = () => {
         {/* Floating Stats at Bottom */}
         <div className="mt-12 flex justify-center gap-8 md:gap-12 opacity-60 animate-fade-in-up delay-500">
           <div className="text-center">
-            <div className="text-xl md:text-2xl font-bold text-white">500+</div>
+            <div className="text-xl md:text-2xl font-bold text-white">5000+</div>
             <div className="text-[10px] md:text-xs text-blue-200 uppercase tracking-wider">Students</div>
           </div>
           <div className="text-center">

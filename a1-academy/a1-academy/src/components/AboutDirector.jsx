@@ -41,7 +41,7 @@ const AboutDirector = () => {
             <div className="bg-blue-50 p-6 rounded-xl border-l-4 border-blue-600 flex gap-4">
               <Award className="text-blue-600 flex-shrink-0" size={32} />
               <div>
-                <h4 className="font-bold text-blue-900 text-lg">22+ Years of Experience</h4>
+                <h4 className="font-bold text-blue-900 text-lg">25+ Years of Experience</h4>
                 <p className="text-sm text-blue-700">One of the most eminent educationists of our times, guiding students towards success since 2000.</p>
               </div>
             </div>
