@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Send, User, Phone, Mail, MessageSquare, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
@@ -12,28 +12,82 @@ const ContactForm = () => {
     reset
   } = useForm();
 
-  const onSubmit = async (data) => {
+    const [sendingMethod, setSendingMethod] = useState(null);
+
+    const sendViaWhatsApp = async (data) => {
     try {
-      // Simulate form submission - Replace with your API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Form data:', data);
+        setSendingMethod('whatsapp');
       
-      // You can integrate with your backend here:
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data)
-      // });
-      
-      setSubmitStatus('success');
+        // Format the message for WhatsApp
+        const message = `*New Contact Form Submission*%0A%0A` +
+            `*Name:* ${data.name}%0A` +
+            `*Phone:* ${data.phone}%0A` +
+            `*Email:* ${data.email}%0A%0A` +
+            `*Message:*%0A${data.message}`;
+
+        // WhatsApp number
+        const whatsappNumber = '917987391196';
+        const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}`;
+
+        // Small delay for better UX
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Open WhatsApp in new tab
+        window.open(whatsappURL, '_blank');
+
+        setSubmitStatus('success-whatsapp');
       reset();
-      setTimeout(() => setSubmitStatus(null), 5000);
+        setTimeout(() => {
+            setSubmitStatus(null);
+            setSendingMethod(null);
+        }, 5000);
     } catch (error) {
-      console.error('Form submission error:', error);
+        console.error('WhatsApp error:', error);
+        setSubmitStatus('error');
+        setSendingMethod(null);
+      setTimeout(() => setSubmitStatus(null), 5000);
+        }
+    };
+
+    const sendViaEmail = async (data) => {
+        try {
+            setSendingMethod('email');
+
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setSubmitStatus('success-email');
+                reset();
+                setTimeout(() => {
+                    setSubmitStatus(null);
+                    setSendingMethod(null);
+                }, 5000);
+            } else {
+                throw new Error(result.error || 'Failed to send email');
+            }
+    } catch (error) {
+            console.error('Email error:', error);
       setSubmitStatus('error');
+            setSendingMethod(null);
       setTimeout(() => setSubmitStatus(null), 5000);
     }
   };
+
+    const onSubmit = async (data, method) => {
+        if (method === 'whatsapp') {
+            await sendViaWhatsApp(data);
+        } else if (method === 'email') {
+            await sendViaEmail(data);
+        }
+    };
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -189,35 +243,69 @@ const ContactForm = () => {
               )}
             </div>
 
-            {/* Submit Button */}
-            <div className="pt-4">
+                      {/* Submit Buttons */}
+                      <div className="pt-4 space-y-4">
+                          {/* Email Button */}
               <button
-                type="submit"
+                              type="button"
+                              onClick={handleSubmit((data) => onSubmit(data, 'email'))}
                 disabled={isSubmitting}
                 className="w-full bg-linear-to-r from-blue-600 via-blue-700 to-indigo-700 text-white font-bold py-5 px-8 rounded-xl hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl hover:shadow-blue-500/30 transform hover:-translate-y-1 active:translate-y-0 group"
               >
-                {isSubmitting ? (
+                              {isSubmitting && sendingMethod === 'email' ? (
+                                  <>
+                                      <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin" />
+                                      <span className="text-lg">Sending Email...</span>
+                                  </>
+                              ) : (
+                                  <>
+                                      <Mail size={20} className="group-hover:scale-110 transition-transform" />
+                                      <span className="text-lg">Send via Email</span>
+                                  </>
+                              )}
+                          </button>
+
+                          {/* WhatsApp Button */}
+                          <button
+                              type="button"
+                              onClick={handleSubmit((data) => onSubmit(data, 'whatsapp'))}
+                              disabled={isSubmitting}
+                              className="w-full bg-linear-to-r from-green-600 via-green-700 to-emerald-700 text-white font-bold py-5 px-8 rounded-xl hover:from-green-700 hover:via-green-800 hover:to-emerald-800 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl hover:shadow-green-500/30 transform hover:-translate-y-1 active:translate-y-0 group"
+                          >
+                              {isSubmitting && sendingMethod === 'whatsapp' ? (
                   <>
                     <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin" />
-                    <span className="text-lg">Sending Message...</span>
+                                      <span className="text-lg">Opening WhatsApp...</span>
                   </>
                 ) : (
                   <>
                     <Send size={20} className="group-hover:translate-x-1 transition-transform" />
-                    <span className="text-lg">Send Message</span>
+                                          <span className="text-lg">Send via WhatsApp</span>
                   </>
                 )}
               </button>
             </div>
 
             {/* Status Messages */}
-            {submitStatus === 'success' && (
+                      {submitStatus === 'success-email' && (
               <div className="p-5 bg-linear-to-r from-green-50 to-emerald-50 border-2 border-green-200 text-green-800 rounded-xl flex items-start gap-3 animate-fade-in-up shadow-lg">
                 <CheckCircle2 size={24} className="text-green-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-lg">Message Sent Successfully!</p>
+                                  <p className="font-bold text-lg">Email Sent Successfully! ✉️</p>
                   <p className="text-sm text-green-700 mt-1">
-                    Thank you for reaching out. We'll get back to you within 24 hours.
+                                      Thank you for reaching out. We've received your message and will get back to you within 24 hours.
+                                  </p>
+                              </div>
+                          </div>
+                      )}
+
+                      {submitStatus === 'success-whatsapp' && (
+                          <div className="p-5 bg-linear-to-r from-green-50 to-emerald-50 border-2 border-green-200 text-green-800 rounded-xl flex items-start gap-3 animate-fade-in-up shadow-lg">
+                              <CheckCircle2 size={24} className="text-green-600 shrink-0 mt-0.5" />
+                              <div>
+                                  <p className="font-bold text-lg">Opening WhatsApp... 💬</p>
+                                  <p className="text-sm text-green-700 mt-1">
+                                      Your message has been prepared. Please send it via WhatsApp to complete your inquiry.
                   </p>
                 </div>
               </div>
