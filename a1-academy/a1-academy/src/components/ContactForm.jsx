@@ -9,8 +9,12 @@ const ContactForm = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset
-  } = useForm();
+      reset,
+      clearErrors
+  } = useForm({
+      mode: 'onSubmit',
+      reValidateMode: 'onChange'
+  });
 
     const [sendingMethod, setSendingMethod] = useState(null);
 
@@ -195,6 +199,7 @@ const ContactForm = () => {
                         message: 'Please enter a valid email address'
                       }
                     })}
+                                      onFocus={() => clearErrors('email')}
                     className={`w-full px-5 py-4 rounded-xl border-2 ${
                       errors.email 
                         ? 'border-red-300 focus:border-red-500 bg-red-50' 
