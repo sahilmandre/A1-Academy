@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     // Email content
     const mailOptions = {
       from: `"A1 Academy Contact Form" <${process.env.SMTP_USER}>`,
-      to: process.env.RECIPIENT_EMAIL || 'jhonnymandre@gmail.com',
+      to: process.env.RECIPIENT_EMAIL || "cometoa1academy@gmail.com",
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <!DOCTYPE html>
@@ -66,12 +66,14 @@ export default async function handler(req, res) {
               </div>
               <div class="field">
                 <div class="label">💬 Message:</div>
-                <div class="value">${message.replace(/\n/g, '<br>')}</div>
+                <div class="value">${message.replace(/\n/g, "<br>")}</div>
               </div>
             </div>
             <div class="footer">
               <p>This email was sent from the A1 Academy contact form.</p>
-              <p>Received on ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
+              <p>Received on ${new Date().toLocaleString("en-IN", {
+                timeZone: "Asia/Kolkata",
+              })}</p>
             </div>
           </div>
         </body>
@@ -88,7 +90,7 @@ Message:
 ${message}
 
 ---
-Received on ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+Received on ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
       `,
     };
 
